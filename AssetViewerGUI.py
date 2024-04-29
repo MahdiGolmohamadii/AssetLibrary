@@ -1,11 +1,11 @@
 import sys
 import json
 
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtCore, QtGui
 
 
 class assetViewDialog(QtWidgets.QDialog):
-    FILE_PASS = 'C:/Users/mahdi/Desktop/assets.json'
+    FILE_PASS = 'C:/E/DEV/Zubrigg_projectFiles/Python_in_production/09-python_in_production-qt_dark_mode'
     IMAGE_WIDTH = 400
     IMAGE_HEIGHT = IMAGE_WIDTH / 1.77778
 
@@ -14,8 +14,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.setWindowTitle('Asset Viewer')
         self.setMinimumSize(300, 500)
 
-        self.json_file_pass = self.FILE_PASS
-
+        self.json_file_pass = self.FILE_PASS + '/assets.json'
 
         self.create_widgets()
         self.create_layout()
@@ -74,7 +73,6 @@ class assetViewDialog(QtWidgets.QDialog):
     def create_connections(self):
         self.asset_list_cb.currentTextChanged.connect(self.refresh_asset_details)
 
-
         self.cancel_btn.clicked.connect(self.close)
 
     def load_asset_from_json(self):
@@ -83,9 +81,25 @@ class assetViewDialog(QtWidgets.QDialog):
         for asset_code in self.assets:
             self.asset_list_cb.addItem(asset_code)
 
-
     def set_preview_image(self, file_name):
-        print('TODO:: set the image', file_name)
+        img_path = self.FILE_PASS + '/{0}'.format(file_name)
+        print(img_path)
+
+        file_info = QtCore.QFileInfo(img_path)
+        if file_info.exists():
+            image = QtGui.QImage(img_path)
+            image = image.scaled(self.preview_image_label.width(), self.preview_image_label.height(),
+                                 QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+            pixmap = QtGui.QPixmap()
+            pixmap.convertFromImage(image)
+
+        else:
+            print('file not found')
+            pixmap = QtGui.QPixmap(self.preview_image_label.size())
+            pixmap.fill(QtCore.Qt.transparent)
+
+        self.preview_image_label.setPixmap(pixmap)
+
     def refresh_asset_details(self):
         asset_code = self.asset_list_cb.currentText()
         current_asset = self.assets[asset_code]
@@ -97,7 +111,6 @@ class assetViewDialog(QtWidgets.QDialog):
         self.modified_date_le.setText(current_asset['modified'])
 
         self.set_preview_image(current_asset['image_path'])
-
 
 
 if __name__ == '__main__':
