@@ -35,7 +35,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.modified_date_le = QtWidgets.QLineEdit()
         #buttons
         self.ok_bt = QtWidgets.QPushButton('edit')
-        self.cancel_btn = QtWidgets.QPushButton('cancel')
+        self.cancel_btn = QtWidgets.QPushButton('Cancel')
 
     def creat_layout(self):
         #Asset list DropDown
