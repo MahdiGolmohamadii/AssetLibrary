@@ -34,7 +34,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.created_date_le = QtWidgets.QLineEdit()
         self.modified_date_le = QtWidgets.QLineEdit()
         #buttons
-        self.ok_bt = QtWidgets.QPushButton('ok')
+        self.ok_bt = QtWidgets.QPushButton('edit')
         self.cancel_btn = QtWidgets.QPushButton('cancel')
 
     def creat_layout(self):
