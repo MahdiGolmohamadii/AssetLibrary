@@ -6,7 +6,7 @@ from PySide6 import QtWidgets, QtCore, QtGui
 
 
 class assetViewDialog(QtWidgets.QDialog):
-    FILE_PASS = 'C:/E/DEV/Zubrigg_projectFiles/Python_in_production/09-python_in_production-qt_dark_mode'
+    FILE_PASS = './Assets'
     IMAGE_WIDTH = 400
     IMAGE_HEIGHT = IMAGE_WIDTH / 1.77778
 
@@ -99,7 +99,7 @@ class assetViewDialog(QtWidgets.QDialog):
 
     def edit_cancelled(self):
         self.refresh_asset_details()
-        self.toggle_edit_mode(False)
+        self.set_edit_mode(False)
     def load_asset_from_json(self):
         with open(self.json_file_pass, 'r') as file_for_read:
             self.assets = json.load(file_for_read)
