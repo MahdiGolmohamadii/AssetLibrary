@@ -4,6 +4,52 @@ import json
 
 from PySide6 import QtWidgets, QtCore, QtGui
 
+class AddNewDialog(QtWidgets.QDialog):
+    def __init__(self, parent):
+        super(AddNewDialog, self).__init__(parent)
+
+        self.setWindowTitle("Custom Dialog")
+
+        self.create_widgets()
+        self.create_layout()
+        self.create_connections()
+
+    def create_widgets(self):
+        self.name_le = QtWidgets.QLineEdit()
+        self.description_pt = QtWidgets.QPlainTextEdit()
+        self.description_pt.setFixedHeight(150)
+        self.creator_le = QtWidgets.QLineEdit()
+        self.created_date_le = QtWidgets.QLineEdit()
+        self.modified_date_le = QtWidgets.QLineEdit()
+        self.save_btn = QtWidgets.QPushButton("save")
+        self.cancel_btn = QtWidgets.QPushButton("cancel")
+
+    def create_layout(self):
+        info_form_layout = QtWidgets.QFormLayout()
+        info_form_layout.addRow('Name:', self.name_le)
+        info_form_layout.addRow('Description', self.description_pt)
+        info_form_layout.addRow('Creator', self.creator_le)
+        info_form_layout.addRow('Created: ', self.created_date_le)
+        info_form_layout.addRow('Modified', self.modified_date_le)
+
+        btn_layout = QtWidgets.QHBoxLayout()
+        btn_layout.addWidget(self.save_btn)
+        btn_layout.addStretch()
+        btn_layout.addWidget(self.cancel_btn)
+
+        main_layout = QtWidgets.QVBoxLayout(self)
+        main_layout.addLayout(info_form_layout)
+        main_layout.addLayout(btn_layout)
+
+    def create_connections(self):
+        self.cancel_btn.clicked.connect(self.close)
+        self.save_btn.clicked.connect(self.add_new_to_json)
+
+
+    def add_new_to_json(self):
+        print('TODO::add new entry to json file')
+        self.close()
+
 
 class assetViewDialog(QtWidgets.QDialog):
     FILE_PASS = './Assets'
@@ -53,13 +99,16 @@ class assetViewDialog(QtWidgets.QDialog):
         self.save_changes_btn.setVisible(False)
         self.cancel_btn = QtWidgets.QPushButton('cancel')
         self.cancel_btn.setVisible(False)
+        self.add_new_btn = QtWidgets.QPushButton('add')
 
     def create_layout(self):
         # Asset list DropDown
         asset_list_layout = QtWidgets.QHBoxLayout()
+        asset_list_layout.addWidget(self.add_new_btn)
         asset_list_layout.addStretch()
         asset_list_layout.addWidget(self.asset_list_label)
         asset_list_layout.addWidget(self.asset_list_cb)
+
         # image
         preview_image_layout = QtWidgets.QHBoxLayout()
         preview_image_layout.addWidget(self.preview_image_label)
@@ -95,6 +144,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.edit_bt.clicked.connect(self.edit_asset_details)
         self.save_changes_btn.clicked.connect(self.save_changes)
         self.cancel_btn.clicked.connect(self.edit_cancelled)
+        self.add_new_btn.clicked.connect(self.add_new_entry)
 
 
     def edit_cancelled(self):
@@ -105,6 +155,7 @@ class assetViewDialog(QtWidgets.QDialog):
             self.assets = json.load(file_for_read)
         for asset_code in self.assets:
             self.asset_list_cb.addItem(asset_code)
+
 
     def save_assets_to_json(self):
         with open(self.json_file_pass, 'w') as file_for_write:
@@ -157,7 +208,6 @@ class assetViewDialog(QtWidgets.QDialog):
 
 
     def save_changes(self):
-        print('TODO:: sae changes made to asset')
         self.set_edit_mode(False)
 
         modified = datetime.datetime.now()
@@ -170,6 +220,11 @@ class assetViewDialog(QtWidgets.QDialog):
         curr_asset['modified'] = self.modified_date_le.text()
 
         self.save_assets_to_json()
+
+    def add_new_entry(self):
+        add_new = AddNewDialog(self)
+        add_new.exec()
+
 
 
 
