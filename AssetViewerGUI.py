@@ -8,7 +8,6 @@ class AddNewDialog(QtWidgets.QDialog):
     FILE_PASS = './Assets'
     def __init__(self, parent):
         super(AddNewDialog, self).__init__(parent)
-
         self.setWindowTitle("Custom Dialog")
         self.json_file_pass = self.FILE_PASS + '/assetsTest.json'
 
@@ -69,7 +68,6 @@ class AddNewDialog(QtWidgets.QDialog):
                 'image_path': self.image_name_le.text()
             }
         }
-        print(data)
         self.write_to_json(data)
 
         self.close()
@@ -77,13 +75,13 @@ class AddNewDialog(QtWidgets.QDialog):
         # Read JSON file
         with open(self.json_file_pass, 'r') as fp:
             listObj = json.load(fp)
-        print(listObj)
         listObj.update(data)
-        print(listObj)
 
         with open(self.json_file_pass, 'w') as json_file:
             json.dump(listObj, json_file,
                       indent=4)
+
+
 
 
 class assetViewDialog(QtWidgets.QDialog):
@@ -187,6 +185,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.refresh_asset_details()
         self.set_edit_mode(False)
     def load_asset_from_json(self):
+        self.asset_list_cb.clear()
         with open(self.json_file_pass, 'r') as file_for_read:
             self.assets = json.load(file_for_read)
         for asset_code in self.assets:
@@ -216,15 +215,18 @@ class assetViewDialog(QtWidgets.QDialog):
 
     def refresh_asset_details(self):
         asset_code = self.asset_list_cb.currentText()
-        current_asset = self.assets[asset_code]
+        if asset_code:
+            current_asset = self.assets[asset_code]
 
-        self.name_le.setText(current_asset['name'])
-        self.description_pt.setPlainText(current_asset['description'])
-        self.creator_le.setText(current_asset['creator'])
-        self.created_date_le.setText(current_asset['created'])
-        self.modified_date_le.setText(current_asset['modified'])
+            self.name_le.setText(current_asset['name'])
+            self.description_pt.setPlainText(current_asset['description'])
+            self.creator_le.setText(current_asset['creator'])
+            self.created_date_le.setText(current_asset['created'])
+            self.modified_date_le.setText(current_asset['modified'])
 
-        self.set_preview_image(current_asset['image_path'])
+            self.set_preview_image(current_asset['image_path'])
+        else:
+            print('ERROR')
     def edit_asset_details(self):
         self.set_edit_mode(True)
 
@@ -260,6 +262,8 @@ class assetViewDialog(QtWidgets.QDialog):
     def add_new_entry(self):
         add_new = AddNewDialog(self)
         add_new.exec()
+        self.load_asset_from_json()
+
 
 
 
