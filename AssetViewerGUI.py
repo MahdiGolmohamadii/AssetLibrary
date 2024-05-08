@@ -5,19 +5,24 @@ import json
 from PySide6 import QtWidgets, QtCore, QtGui
 
 class AddNewDialog(QtWidgets.QDialog):
+    FILE_PASS = './Assets'
     def __init__(self, parent):
         super(AddNewDialog, self).__init__(parent)
 
         self.setWindowTitle("Custom Dialog")
+        self.json_file_pass = self.FILE_PASS + '/assetsTest.json'
 
         self.create_widgets()
         self.create_layout()
         self.create_connections()
+        self.set_modified_created()
 
     def create_widgets(self):
+        self.code_name_le = QtWidgets.QLineEdit()
         self.name_le = QtWidgets.QLineEdit()
+        self.image_name_le = QtWidgets.QLineEdit()
         self.description_pt = QtWidgets.QPlainTextEdit()
-        self.description_pt.setFixedHeight(150)
+        self.description_pt.setFixedHeight(50)
         self.creator_le = QtWidgets.QLineEdit()
         self.created_date_le = QtWidgets.QLineEdit()
         self.modified_date_le = QtWidgets.QLineEdit()
@@ -26,7 +31,9 @@ class AddNewDialog(QtWidgets.QDialog):
 
     def create_layout(self):
         info_form_layout = QtWidgets.QFormLayout()
+        info_form_layout.addRow('Asset Code', self.code_name_le)
         info_form_layout.addRow('Name:', self.name_le)
+        info_form_layout.addRow('Image Name', self.image_name_le)
         info_form_layout.addRow('Description', self.description_pt)
         info_form_layout.addRow('Creator', self.creator_le)
         info_form_layout.addRow('Created: ', self.created_date_le)
@@ -45,10 +52,38 @@ class AddNewDialog(QtWidgets.QDialog):
         self.cancel_btn.clicked.connect(self.close)
         self.save_btn.clicked.connect(self.add_new_to_json)
 
+    def set_modified_created(self):
+        modified = datetime.datetime.now()
+        self.modified_date_le.setText(modified.strftime("%Y/%m/%d %H:%M:%S"))
+        self.created_date_le.setText(modified.strftime("%Y/%m/%d %H:%M:%S"))
 
     def add_new_to_json(self):
-        print('TODO::add new entry to json file')
+        asset_code = self.code_name_le.text()
+        data = {
+            asset_code:{
+                'name': self.name_le.text(),
+                'description': self.description_pt.toPlainText(),
+                'creator': self.creator_le.text(),
+                'created': self.created_date_le.text(),
+                'modified': self.modified_date_le.text(),
+                'image_path': self.image_name_le.text()
+            }
+        }
+        print(data)
+        self.write_to_json(data)
+
         self.close()
+    def write_to_json(self, data):
+        # Read JSON file
+        with open(self.json_file_pass, 'r') as fp:
+            listObj = json.load(fp)
+        print(listObj)
+        listObj.update(data)
+        print(listObj)
+
+        with open(self.json_file_pass, 'w') as json_file:
+            json.dump(listObj, json_file,
+                      indent=4)
 
 
 class assetViewDialog(QtWidgets.QDialog):
@@ -64,7 +99,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.setWindowTitle('Asset Viewer')
         self.setMinimumSize(300, 500)
 
-        self.json_file_pass = self.FILE_PASS + '/assets.json'
+        self.json_file_pass = self.FILE_PASS + '/assetsTest.json'
 
         self.create_widgets()
         self.create_layout()
@@ -82,7 +117,7 @@ class assetViewDialog(QtWidgets.QDialog):
         # info widgets
         self.name_le = QtWidgets.QLineEdit()
         self.description_pt = QtWidgets.QPlainTextEdit()
-        self.description_pt.setFixedHeight(150)
+        self.description_pt.setFixedHeight(50)
         self.creator_le = QtWidgets.QLineEdit()
         self.created_date_le = QtWidgets.QLineEdit()
         self.modified_date_le = QtWidgets.QLineEdit()
@@ -145,6 +180,7 @@ class assetViewDialog(QtWidgets.QDialog):
         self.save_changes_btn.clicked.connect(self.save_changes)
         self.cancel_btn.clicked.connect(self.edit_cancelled)
         self.add_new_btn.clicked.connect(self.add_new_entry)
+
 
 
     def edit_cancelled(self):
