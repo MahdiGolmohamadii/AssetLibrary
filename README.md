@@ -1,3 +1,8 @@
 # AssetViewer
 ## Overview
-AssetViewer is a powerful tool designed to simplify the process of viewing and managing digital assets. This application provides a user-friendly interface for browsing, organizing, and previewing various types of assets, making it an essential tool for digital artists, designers, and developers.
+The Asset Library is a centralized asset management solution designed to streamline asset management processes and improve workflow efficiency. This project utilizes Python and the PySide/PyQt frameworks to provide an intuitive interface for managing assets.
+
+## Features
+* __Centralized Management__: All asset information is stored in JSON files, making it easy to manage and update.
+* __User-Friendly Interface__: The system presents asset information in an intuitive and accessible manner.
+* __Efficiency__: Streamlines asset management processes, improving overall workflow efficiency.
