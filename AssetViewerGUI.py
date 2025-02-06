@@ -184,13 +184,13 @@ class assetViewDialog(QtWidgets.QDialog):
     def edit_cancelled(self):
         self.refresh_asset_details()
         self.set_edit_mode(False)
+        
     def load_asset_from_json(self):
         self.asset_list_cb.clear()
         with open(self.json_file_pass, 'r') as file_for_read:
             self.assets = json.load(file_for_read)
         for asset_code in self.assets:
             self.asset_list_cb.addItem(asset_code)
-
 
     def save_assets_to_json(self):
         with open(self.json_file_pass, 'w') as file_for_write:
@@ -205,7 +205,6 @@ class assetViewDialog(QtWidgets.QDialog):
                                  QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
             pixmap = QtGui.QPixmap()
             pixmap.convertFromImage(image)
-
         else:
             print('file not found')
             pixmap = QtGui.QPixmap(self.preview_image_label.size())
@@ -227,11 +226,11 @@ class assetViewDialog(QtWidgets.QDialog):
             self.set_preview_image(current_asset['image_path'])
         else:
             print('ERROR')
+    
     def edit_asset_details(self):
         self.set_edit_mode(True)
 
     def set_edit_mode(self, state):
-
         #change read only fields
         self.name_le.setReadOnly(not state)
         self.description_pt.setReadOnly(not state)
@@ -263,8 +262,6 @@ class assetViewDialog(QtWidgets.QDialog):
         add_new = AddNewDialog(self)
         add_new.exec()
         self.load_asset_from_json()
-
-
 
 
 
